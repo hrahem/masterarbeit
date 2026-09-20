@@ -1,0 +1,14 @@
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\label{chap:abstract}
+
+Email marketing remains one of the most cost-effective digital communication channels for businesses, yet campaign design continues to rely heavily on A/B testing --- a static, traffic-intensive method that is slow to adapt and incapable of personalizing decisions to individual recipients in real time. This thesis investigates whether AI-based adaptive optimization methods can systematically outperform traditional A/B testing in the context of email campaign design.
+
+We propose and evaluate a unified comparative framework covering four approaches: (1) classical A/B testing as a baseline, (2) Bayesian inference with Thompson Sampling, (3) contextual multi-armed bandits conditioned on user segment features, and (4) reinforcement learning applied to multi-step drip campaign sequences. The comparison is conducted using anonymized historical campaign data from ProvenExpert, a German B2B review platform, and evaluated across click-through rate, open rate, conversion rate, and convergence speed within user segments defined by device type, geographic region, and past engagement behavior.
+
+The experimental results demonstrate that Bayesian bandit methods converge to optimal variant selection significantly faster than A/B testing while maintaining statistical reliability. Contextual bandits achieve measurable personalization gains across user segments, and reinforcement learning shows promise for multi-step campaign sequences, though it requires substantially more data to converge stably.
+
+This thesis contributes a structured comparative framework for adaptive email campaign optimization and provides practical guidelines for marketing teams seeking to move beyond static experimentation toward continuously learning, data-driven campaign systems.
+
+\vspace{1.5cm}
+\noindent\textbf{Keywords:} email marketing, A/B testing, Bayesian inference, Thompson Sampling, multi-armed bandits, contextual bandits, reinforcement learning, campaign optimization, click-through rate

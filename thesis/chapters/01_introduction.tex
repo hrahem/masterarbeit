@@ -1,0 +1,85 @@
+\chapter{Introduction}
+\label{chap:introduction}
+
+Digital marketing has become one of the most important communication channels for modern businesses. Among the available marketing methods, email campaigns remain highly effective due to their direct communication with customers and their ability to deliver personalized content. Companies use email campaigns for customer engagement, product promotion, newsletters, retention strategies, and advertising.
+
+However, designing effective email campaigns is a complex and data-intensive task. Marketing teams must determine several important factors such as the email subject line, personalization strategy, target audience segmentation, timing of delivery, and content structure. Traditional approaches mainly rely on manual experimentation, intuition, and A/B testing. Although these methods can provide useful insights, they are often time-consuming and limited in scalability when dealing with large datasets and continuously changing customer behavior.
+
+Recent advancements in Artificial Intelligence (AI) and Data Mining provide new opportunities for improving email campaign analysis and optimization. Machine learning algorithms can analyze historical campaign data and discover patterns related to customer engagement and campaign performance. AI systems can also support decision-making by predicting campaign outcomes and evaluating different campaign configurations.
+
+Although this topic has already been widely studied in the literature and in previous academic work, existing approaches typically optimize a single campaign parameter in isolation --- for example, predicting the open rate of a subject line before sending~\cite{paulo2022leveraging}, predicting the best send time per recipient~\cite{araujo2022send}, or allocating advertising budget across channels~\cite{schwartz2017customer, singh2023maximize}. Therefore, rather than proposing a completely new solution, this thesis builds upon existing research by analyzing and comparing different machine learning and data mining techniques in the context of email campaign optimization in order to evaluate their effectiveness and provide insights into their strengths and limitations for this application domain.
+
+The goal of this thesis is to investigate how AI techniques can augment and optimize email campaign design. The research focuses on the application of Data Mining and Machine Learning methods to improve campaign effectiveness, personalization, and performance prediction.
+\vspace{1.0cm}
+
+\section*{Standard Email Campaign Workflow}
+
+A standard email marketing campaign follows a structured sequence of steps, illustrated in
+Figure~\ref{fig:email_workflow}. The process begins with goal setting and audience
+segmentation, followed by content design, where the specific email elements --- subject
+line, body layout, call-to-action button, and imagery --- are defined. Once variants are
+created, they are distributed to recipients and their performance is tracked using engagement
+metrics such as open rate, click-through rate, and conversion rate. The results are then
+analyzed and fed back into the next iteration of the campaign.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.1cm and 0.7cm,
+        box/.style={rectangle, draw, rounded corners=4pt, fill=gray!10,
+                    text width=2.7cm, align=center, minimum height=1.0cm, font=\small},
+        focus/.style={box, fill=blue!12, draw=blue!50!black, thick},
+        kdd/.style={font=\scriptsize\itshape, text=black!60, align=center},
+        arr/.style={->, thick, >=stealth},
+        adapt/.style={->, thick, >=stealth, dashed, blue!55!black, font=\scriptsize}
+    ]
+        \node[box] (goal)    {Goal \& Audience Definition};
+        \node[box, right=of goal] (design)  {Campaign Design (variants)};
+        \node[box, right=of design] (send)   {Campaign Execution};
+        \node[box, right=of send] (track)   {Performance Tracking};
+        \node[focus, below=of send] (analyze) {Analysis \& Optimization};
+
+        % KDD phase correspondence
+        \node[kdd, below=1mm of track.south, xshift=-7mm] {KDD: data selection \\ \& preprocessing};
+        \node[kdd, below=1mm of analyze.south] {KDD: data mining \\ \& evaluation};
+
+        % traditional (slow, per-campaign) loop
+        \draw[arr] (goal)    -- (design);
+        \draw[arr] (design)  -- (send);
+        \draw[arr] (send)    -- (track);
+        \draw[arr] ([xshift=10mm]track.south)   |- (analyze);
+        \draw[arr] (analyze.west) -| node[kdd, pos=0.28, below]
+            {next campaign iteration \\ (KDD: knowledge deployment)} (goal.south);
+
+        % adaptive loop introduced by this thesis
+        \draw[adapt] (track.north) to[bend right=28]
+            node[above] {adaptive optimization (this thesis): variants updated \emph{during} execution}
+            (design.north);
+    \end{tikzpicture}
+    \caption{Standard email campaign workflow and its correspondence to the KDD
+    process~\cite{fayyad1996kdd}. In traditional practice, the highlighted optimization
+    step runs only after the campaign window closes (solid loop), typically driven by
+    A/B test results. This thesis replaces it with adaptive methods that feed engagement
+    data back into the design step continuously while the campaign is running
+    (dashed loop).}
+    \label{fig:email_workflow}
+\end{figure}
+
+The key limitation of this traditional workflow is that the optimization step is passive: it
+evaluates the experiment only after a fixed campaign window closes, discards the traffic
+spent on underperforming variants, and produces a single winner applied uniformly to all
+future recipients.
+
+\vspace{1.0cm}
+
+The remainder of this thesis is organized as follows:
+
+\begin{itemize}
+    \item Chapter~\ref{chap:problem_statement} defines the problem statement and the research objectives.
+    \item Chapter~\ref{chap:background} introduces the theoretical background: A/B testing, Bayesian inference, multi-armed and contextual bandits, and reinforcement learning.
+    \item Chapter~\ref{chap:related_work} reviews related work and positions this thesis within it.
+    \item Chapter~\ref{chap:methodology} describes the proposed comparison framework, the dataset, and the configuration of each method.
+    \item Chapter~\ref{chap:evaluation} presents the experimental setup and the evaluation results.
+    \item Chapter~\ref{chap:conclusion} concludes the thesis and outlines directions for future work.
+\end{itemize}
+

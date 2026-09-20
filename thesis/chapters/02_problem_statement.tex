@@ -1,0 +1,35 @@
+\chapter{Problem Statement and Research Objectives}
+\label{chap:problem_statement}
+
+Many organizations continue to rely on manual approaches and static A/B testing when designing email marketing campaigns. Decisions regarding subject lines, content structure, personalization, audience segmentation, and delivery timing are often based on intuition or limited experimentation rather than adaptive, data-driven optimization.
+
+As customer datasets grow and user behavior becomes increasingly dynamic, this approach faces several challenges:
+
+\begin{itemize}
+    \item Static A/B tests are slow to converge and waste traffic on underperforming variants, since the equal split is maintained for the entire experiment window regardless of interim results~\cite{schwartz2017customer, kohavi2009controlled}.
+    \item They offer no personalization: the same winning variant is applied to all recipients regardless of their profile~\cite{li2010contextual}.
+    \item They optimize one parameter at a time; testing multiple elements simultaneously requires a full-factorial design whose number of variants grows multiplicatively, making it impractical at typical email traffic volumes~\cite{kohavi2009controlled}.
+    \item They cannot react to behavioral drift or seasonal changes, because the winner is fixed once the experiment ends~\cite{wan2023bayesian, singh2023maximize}.
+\end{itemize}
+
+AI-based adaptive methods --- specifically Bayesian bandits, contextual bandits, and reinforcement learning --- address these limitations by updating decisions continuously as new engagement data arrives. However, it remains unclear which of these methods performs best in the specific context of email campaign design, whether any of them consistently outperforms A/B testing across different user segments, and what the practical trade-offs are in terms of convergence speed, personalization capability, and implementation complexity.
+
+\vspace{1.0cm}
+
+\noindent The main research question of this thesis is:
+
+\begin{quote}
+\textit{Can AI-based adaptive optimization methods outperform classical A/B testing in email campaign design, and if so, which method offers the best trade-off between performance, speed, and personalization?}
+\end{quote}
+
+\vspace{0.5cm}
+
+\noindent This leads to the following specific research objectives:
+
+\begin{enumerate}
+    \item Implement and configure a representative set of adaptive optimization methods (Thompson Sampling, contextual bandits, and reinforcement learning) alongside a classical A/B testing baseline.
+    \item Apply all methods to the same email campaign dataset from ProvenExpert, optimizing across the same set of design parameters.
+    \item Evaluate and compare all methods on click-through rate, open rate, conversion rate, and convergence speed.
+    \item Analyze performance across user segments defined by device type, geographic region, and past engagement level.
+    \item Derive practical recommendations for marketing teams considering a transition from static experimentation to adaptive AI-based campaign optimization.
+\end{enumerate}

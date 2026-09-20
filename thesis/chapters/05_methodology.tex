@@ -1,0 +1,62 @@
+\chapter{Methodology and Proposed Framework}
+\label{chap:methodology}
+
+% -----------------------------------------------------------------------
+% TO WRITE: Describe the overall design of your comparison framework and
+% the technical choices behind each method. Explain *why* you chose each
+% approach, what data you used, and how you prepared it.
+% Suggested structure below — remove these comments as you write.
+% -----------------------------------------------------------------------
+
+\section{Research Design and Framework Overview}
+% Describe the overall structure of your comparison:
+% - What are the four methods being compared and why those four?
+% - How does the experiment flow (historical simulation first, then live)?
+% - Provide a diagram/figure of the framework pipeline if possible.
+
+\section{Dataset Description}
+% Describe the ProvenExpert campaign dataset:
+% - Time range, number of campaigns, number of recipients
+% - What features are available (device, geo, engagement history, etc.)
+% - Any preprocessing, anonymization, or filtering steps applied
+
+\section{Campaign Design Parameters}
+\label{sec:campaign_parameters}
+% List the email elements being optimized:
+% - Subject line variants
+% - CTA button variants
+% - Layout / content block variants
+% - Image placement / color scheme variants
+% Explain how variants were generated or selected.
+
+\section{Baseline: Classical A/B Testing}
+% Describe your A/B testing implementation:
+% - Traffic split method (random assignment)
+% - Statistical test used (e.g. chi-squared, z-test)
+% - Stopping rule (fixed sample size or significance threshold)
+
+\section{Bayesian Bandit with Thompson Sampling}
+% Describe the Thompson Sampling implementation:
+% - Prior distribution chosen (e.g. Beta-Bernoulli for CTR)
+% - How posterior is updated with each new observation
+% - How variant selection decisions are made per send
+
+\section{Contextual Bandit with User Segmentation}
+% Describe the contextual bandit implementation:
+% - Which user features are used as context
+% - Algorithm used (e.g. LinUCB or contextual Thompson Sampling)
+% - How context vectors are constructed per recipient
+
+\section{Reinforcement Learning for Drip Campaigns}
+% Describe the RL formulation:
+% - State space (user engagement history, campaign step)
+% - Action space (next email variant to send)
+% - Reward function (e.g. click, conversion, or composite)
+% - Algorithm used (e.g. Q-learning, DQN, policy gradient)
+% - Training procedure on historical data
+
+\section{Evaluation Metrics and Criteria}
+% Define formally how you will compare the four methods:
+% - Primary metrics: CTR, open rate, conversion rate
+% - Secondary metrics: convergence speed, regret (for bandits)
+% - Segment-level breakdown (device, region, engagement tier)

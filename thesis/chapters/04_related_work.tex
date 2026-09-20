@@ -1,0 +1,46 @@
+\chapter{Related Work}
+\label{chap:related_work}
+
+Chapter~\ref{chap:problem_statement} identified the limitations of static A/B testing and formulated the research question; Chapter~\ref{chap:background} defined the adaptive methods considered as alternatives. This chapter reviews how prior work has addressed the same problem, in two directions: studies that apply machine learning to individual email campaign parameters, and studies that compare adaptive decision-making methods against classical A/B testing in live marketing contexts. Section~\ref{sec:rw_positioning} positions this thesis against both, using the terminology of Chapter~\ref{chap:background}.
+
+\section{Machine Learning for Email Campaign Optimization}
+
+Paulo, Miguéis, and Pereira~\cite{paulo2022leveraging} directly address the problem of improving email engagement using machine learning. They train classification and regression models on subject line features --- including length, sentiment, punctuation, and personalization tokens --- to predict open rates before a campaign is sent. Their results show that text-based models can meaningfully distinguish high-performing subject lines from weak ones. This work shares the central motivation of this thesis: replacing intuition-driven campaign design with data-driven optimization. The key difference is scope --- their approach is static (trained on historical data, applied before sending) and targets a single design parameter, whereas this thesis treats optimization as a real-time sequential decision problem in the bandit sense of Section~\ref{sec:bg_mab}, across multiple campaign elements simultaneously, specifically: the subject line variant, the call-to-action button (wording and placement), the content layout, and the send time. These are exactly the design parameters defined in Section~\ref{sec:campaign_parameters} and used consistently throughout the evaluation.
+
+Araújo et al.~\cite{araujo2022send} tackle the complementary problem of send-time optimization. They use historical open-rate data to predict the optimal delivery window per recipient, improving on fixed-schedule baselines. Like Paulo et al., the approach is a supervised prediction model applied offline; in the terms of Chapter~\ref{chap:background}, both are one-shot predictions rather than sequential decision-making with exploration. Together, these two studies confirm that individual email parameters can be meaningfully optimized using ML, but neither addresses the challenge of adapting continuously across multiple parameters during a live campaign --- which is the core problem this thesis targets.
+
+\section{Adaptive Methods and Bandit Algorithms in Digital Marketing}
+
+Schwartz, Bradlow, and Fader~\cite{schwartz2017customer} provide an influential benchmark for comparing bandit-based experimentation against A/B testing in a real marketing setting. Applied to display advertising at a major US retailer, they show that a multi-armed bandit design (Section~\ref{sec:bg_mab}) generates substantially more conversions than an equal-split A/B test run over the same period, because the bandit progressively reallocates traffic toward the better-performing variants during the experiment itself rather than waiting until its end --- i.e., it reduces the regret defined in Equation~\eqref{eq:regret}. This directly mirrors the comparison this thesis performs, transposed from display advertising budget allocation to email campaign content design.
+
+Singh, Nanavati, Kar, and Gupta~\cite{singh2023maximize} present the study most comparable to this thesis. They apply a reinforcement learning model to maximize click-through rates in digital display advertising campaigns and benchmark it empirically against A/B testing and classical classifiers on real industry data. It should be noted that their formulation treats each ad impression independently and optimizes only the immediate click reward; in the terminology of Section~\ref{sec:bg_rl}, this is the single-state special case of an MDP --- a bandit --- rather than full multi-step reinforcement learning. Their central finding is that RL adapts more effectively than A/B testing in dynamic marketing environments by updating its policy continuously rather than waiting for a fixed experiment window to close. This thesis builds on the same hypothesis --- that adaptive AI methods outperform static A/B testing --- but applies it to email campaign design, extends the comparison to include Bayesian bandits and contextual bandits alongside RL, employs full multi-step RL where it is genuinely warranted (drip campaign sequences, in which the response to one email changes the state for the next), and evaluates personalization across user segments, which Singh et al. do not address.
+
+Wan et al.~\cite{wan2023bayesian} approach the problem from the infrastructure side, proposing a Bayesian sequential decision-making framework for continuous monitoring of running A/B experiments at industrial scale. Their work, presented at KDD 2023, shows that treating the ``when to stop and act'' decision as a learning problem --- rather than a fixed statistical threshold --- leads to faster and more reliable decisions. This is directly relevant to this thesis because it confirms that the boundary between classical experimentation and adaptive AI methods is already being dissolved in production systems.
+
+\section{Positioning of This Thesis}
+\label{sec:rw_positioning}
+
+The reviewed work confirms that the research direction pursued here is well-grounded and timely. Existing studies in email marketing~\cite{paulo2022leveraging, araujo2022send} have treated optimization as a static prediction task. Studies in digital advertising~\cite{schwartz2017customer, singh2023maximize} have compared adaptive methods against A/B testing but focused on channel-level allocation rather than content design, and without segment-level personalization. Table~\ref{tab:related_work_gap} summarizes the comparison. No prior study combines the email domain with an adaptive method, segment-level personalization, and multi-step sequences in a single evaluation --- which is precisely the combination required by the research objectives of Chapter~\ref{chap:problem_statement}. This thesis addresses the gap by providing a unified comparison of A/B testing, Bayesian bandits, contextual bandits, and reinforcement learning applied specifically to email campaign content elements, evaluated on the same metrics and dataset, with explicit analysis across user segments.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Related work compared along the dimensions of this thesis. \emph{Adaptive}:
+    reallocates decisions during the experiment; \emph{Personal.}: personalizes per user
+    segment or context; \emph{Multi-step}: models sequences of dependent decisions;
+    \emph{Unified comp.}: compares several method families on one dataset.}
+    \label{tab:related_work_gap}
+    \small
+    \begin{tabular}{lccccc}
+        \toprule
+        Study & Email domain & Adaptive & Personal. & Multi-step & Unified comp. \\
+        \midrule
+        Paulo et al.~\cite{paulo2022leveraging}     & yes & no  & no  & no  & no \\
+        Ara\'ujo et al.~\cite{araujo2022send}       & yes & no  & yes & no  & no \\
+        Schwartz et al.~\cite{schwartz2017customer} & no  & yes & no  & no  & no \\
+        Singh et al.~\cite{singh2023maximize}       & no  & yes & no  & no  & yes \\
+        Wan et al.~\cite{wan2023bayesian}           & no  & yes & no  & no  & no \\
+        \midrule
+        This thesis                                  & yes & yes & yes & yes & yes \\
+        \bottomrule
+    \end{tabular}
+\end{table}

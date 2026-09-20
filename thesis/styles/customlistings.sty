@@ -1,0 +1,112 @@
+% Copyright (C)  2019 Torsten Ziemann (torsten.ziemann[at]b-tu.de)
+%
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.3
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+% A copy of the license is included in the file entitled "LICENSE".	
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{Package/customlistings}[2017/01/07 v0.1 Extension and Customization of listings.sty]
+
+% ----------------------------------------------------------------------
+% Include necessary packages
+% ----------------------------------------------------------------------
+\RequirePackage{listings}
+\RequirePackage{moreverb}
+\RequirePackage{color}
+\RequirePackage{xcolor}
+
+\newcommand{\package}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+%% ----------------------------------------------------------------------
+%% Adding Support for JavaScript
+%% based on https://tex.stackexchange.com/questions/89574/language-option-supported-in-listings
+%% ----------------------------------------------------------------------
+%\definecolor{lightgray}{rgb}{.9,.9,.9}
+%\definecolor{darkgray}{rgb}{.4,.4,.4}
+%\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+%\lstdefinelanguage{JavaScript}{
+%  keywords={break,
+%			case,
+%			catch,
+%			continue,
+%			debugger,
+%			default,
+%			delete,
+%			do,
+%			else,
+%			false,
+%			finally,
+%			for,
+%			function,
+%			if,
+%			in,
+%			instanceof,
+%			new,
+%			null,
+%			return,
+%			switch,
+%			this,
+%			throw,
+%			true,
+%			try,
+%			typeof,
+%			var,
+%			void,
+%			while,
+%			with
+%	},
+%  morecomment=[l]{//},
+%  morecomment=[s]{/*}{*/},
+%  morestring=[b]',
+%  morestring=[b]",
+%  ndkeywords={class,
+%			  export,
+%			  boolean,
+%			  throw,
+%			  implements,
+%			  import,
+%			  this},
+%  keywordstyle=\color{blue}\bfseries,
+%  ndkeywordstyle=\color{darkgray}\bfseries,
+%  identifierstyle=\color{black},
+%  commentstyle=\color{purple}\ttfamily,
+%  stringstyle=\color{red}\ttfamily,
+%  sensitive=true
+%}
+%%
+%\lstset{
+%   language=JavaScript,
+%   backgroundcolor=\color{lightgray},
+%   extendedchars=true,
+%   basicstyle=\footnotesize\ttfamily,
+%   showstringspaces=false,
+%   showspaces=false,
+%   numbers=left,
+%   numberstyle=\footnotesize,
+%   numbersep=9pt,
+%   tabsize=2,
+%   breaklines=true,
+%   showtabs=false,
+%   captionpos=b
+%}
+%%
+%%
+%% ----------------------------------------------------------------------
+%% Adding Support for Python
+%% based on https://tex.stackexchange.com/questions/83882/how-to-highlight-python-syntax-in-latex-listings-lstinputlistings-command
+%% ----------------------------------------------------------------------
+%\definecolor{deepblue}{rgb}{0,0,0.5}
+%\definecolor{deepred}{rgb}{0.6,0,0}
+%\definecolor{deepgreen}{rgb}{0,0.5,0}
+%\lstset{
+%  language=Python,
+%  basicstyle=\ttm,
+%  otherkeywords={self},
+%  keywordstyle=\ttb\color{deepblue},
+%  emphstyle=\ttb\color{deepred},
+%  stringstyle=\color{deepgreen},
+%  frame=tb,
+%  showstringspaces=false
+%}

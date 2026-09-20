@@ -1,0 +1,260 @@
+% ======================================================================
+% LATEX main file - all configuration geos below; carefully read this file
+% ======================================================================
+\RequirePackage{fix-cm}		% fix support for modern type fonts
+\documentclass[%
+	paper=a4,				% use a4 paper
+	BCOR10mm,				% width of border for printing
+	DIV=13,					% proportion for empty and non-empty parts of a page
+	headinclude,			% include header in typearea calculation
+	%footinclude,			% include footer in typearea calculation
+	%oneside,				% one sided printing
+	twoside,				% two sided printing
+    cleardoublepage=empty,	% empty backsides for two sided printing
+	titlepage,				% support for title environment
+	%pointednumbers,		% numbers (in headlines) with ending points
+	pointlessnumbers,		% numbers (in headlines) without ending points
+	parskip=half,			% a half line beetwen paragraphs
+	%parintend=false,		% indentation and no skip between paragraphs
+	%chapterprefix,			% chapter names with prefix "Chapter"
+	chapterprefix=false,	% chapter names without prefix "Chapter"
+	headsepline,			% line below header
+	%footsepline,			% line above footer
+	%smallheadings,			% size of header is small
+	normalheadings,			% size of header is normal
+	%bigheadings,			% size of header is large
+	bibtotoc,				% include bibliography in table of contents
+	%bibtotocnumbered,		% include bibliography in table if contents (numbered)
+	liststotoc,				% include lists in table of contents
+	%liststotocnumbered,	% include lists in table of contents (numbered)
+	idxtotoc,				% include index in table if contents
+	fontsize=11pt,			% fontsize in points
+	pagesize=pdftex,		% define typearea for pdftex usage
+	%pagesize=dvips,		% define typearea for dvi/ps usage
+]{scrbook}	
+%
+%
+% ----------------------------------------------------------------------
+% Load Packages
+% ----------------------------------------------------------------------
+\usepackage{helvet}						% include Helvetica type fonts
+\usepackage[utf8]{inputenc}				% utf8 coding - for english
+\usepackage[T1]{fontenc}				% t1 fonts
+\usepackage[T1]{url}					% web adresses with t1 style
+\urlstyle{tt}							% web adresses in tt-style
+\usepackage{lmodern}					% includes "Latin modern" font with better scaling
+\usepackage{microtype}					% further font enhancements
+\usepackage{setspace}					% support different line spacings
+\usepackage{multicol}					% support multiple columns
+\usepackage{ellipsis}					% corrects wrong spaces after dots
+
+\usepackage[english, UKenglish]{babel}	% english language
+\usepackage[english=american]{csquotes}	% american style qoutes
+
+\usepackage{enumerate}					% enumeration support
+\usepackage{tabularx}					% allows definition of width of table
+\usepackage{longtable}					% support multi-page tables
+\usepackage{arydshln}   				% dashed lines in tables
+\usepackage{booktabs}   				% toprule, midrule in tables
+
+\usepackage[printonlyused]{acronym}		% support acronym listing
+
+\usepackage{amsmath} 
+\usepackage{mathtools}
+\usepackage{amsfonts} 
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage{bbm}
+\usepackage{scrhack}
+\usepackage{dsfont}
+
+\usepackage{color}						% color support, required for ...
+\usepackage{xcolor}						% ... other packages
+\usepackage{graphicx}					% including graphics
+\usepackage{subfigure}					% allows multiple pictures in one figure
+\usepackage{flafter}					% never insert the figure before the reference
+\usepackage{tikz}						% script based vector graphics support
+\usetikzlibrary{
+	positioning,
+	shapes,
+	chains,
+	snakes,
+	fit,
+	matrix
+}
+
+\usepackage{styles/customlistings}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+\usepackage[chapter]{algorithm}
+\usepackage{algpseudocode}
+
+% ----------------------------------------------------------------------
+% Setup To Do Notes
+% ----------------------------------------------------------------------
+\RequirePackage[%
+	colorinlistoftodos,
+	prependcaption,
+	textsize=tiny
+]{todonotes}
+\newcommand{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommand{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommand{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommand{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+
+%
+%
+% ----------------------------------------------------------------------
+% Setup Hyperref
+% ----------------------------------------------------------------------
+\usepackage[%
+	pdftitle={AI-Augmented Optimization of Email Campaign Design Using Reinforcement Learning and Bayesian Inference},
+	pdfsubject={Master Thesis},
+	pdfauthor={Hacene Rahem},
+	pdfkeywords={email marketing, A/B testing, reinforcement learning, Bayesian inference, multi-armed bandits, contextual bandits, campaign optimization},
+    pdfcreator={LaTeX with hyperref and KOMA-Script},
+	colorlinks,
+	urlcolor=black,
+	citecolor=black,
+	linkcolor=black,
+	breaklinks=true,
+	pdfpagemode=UseOutlines,
+	plainpages=false,
+	pdfpagelabels,
+	bookmarksnumbered,
+	pdfstartview=FitV,
+	pdfpagelayout=SinglePage,
+	pdfdisplaydoctitle=true
+]{hyperref}
+%
+%
+% ----------------------------------------------------------------------
+% Setup the bibliography using biblatex
+% ----------------------------------------------------------------------
+\usepackage{csquotes}
+\usepackage{doi}
+\usepackage[
+	backend=bibtex,				% use "biber" on unix / "biblatex" on windows
+	hyperref,					% support for hyperlinks to bibentries
+	sortcites,					% enable sorting of citations
+	%backref,					% backreference to the place entries where used
+	date=short,					% date format
+	bibencoding=inputenc,		% using inputenc for bibencoding, too
+	maxnames=3,					% max author names before et.al
+	minnames=2,					% min author names before et.al
+	giveninits=true,			% only initials of given name; else set false
+	sorting=nyt,				% comparator function for the entries
+	bibstyle=numeric,			% use numbers to reference entries
+	citestyle=numeric-comp,		% in text usage of compact numeric, e.g. [1,2,3] -> [1-3]
+	bibencoding=utf8,			% assuming utf8 for the *.bib file
+	bibwarn=true,				% enable warnings
+	doi=false,					% include the doi number
+	isbn=false,					% incluide the isbn
+	url=false					% skip url, since not always available/present
+]{biblatex}
+\setlength{\bibitemsep}{0.6em}  % spacing between the entries in the bibliography
+\setlength{\bibhang}{2em}       % intention after first line of entry
+% allow line breaks within bibliography entries
+\DeclareFieldFormat*{title}{#1}
+% reference titles are written italic instead of underline
+\DeclareFieldFormat*{titlecase}{%
+	\ifdef{\currentfield}{\ifcurrentfield{title}{\usefield{\textit}{\currentfield}}{#1}}{#1}
+}
+% remove language property of bib-entry
+\AtEveryBibitem{%
+	\clearlist{language}%
+}
+\addbibresource{bibliography/bibliography.bib}% Include the bibliography database file
+%
+%
+% -----------------------------------------------------------------------------
+% set graphics path
+% -----------------------------------------------------------------------------
+\graphicspath{{figures/}}
+%
+%
+% -----------------------------------------------------------------------------
+% Figure placement enhancements
+% -----------------------------------------------------------------------------
+%LaTeX's figure placement algorithm is quite biased in favor of putting figures 
+%on a page by themselves, instead of on the top of a page with some text below it. 
+%Often, the result is esthetically unappealing (to be polite). Fortunately, the 
+%parameters of the algorithm can be changed. The main problem is that LaTeX per 
+%default only allows a part of the top of a text-page (70%) to contain figures, 
+%and requires at least 20% of a page to be text when text and figures share a page. 
+%These parameters should be set to more reasonable values, for example 85% and 10%.
+%\renewcommand{\topfraction}{0.85}
+%\renewcommand{\textfraction}{0.1}
+%
+%This helps, but sometimes LaTeX puts a figure on a page by itself, although it would 
+%fit perfectly well on the top of a page. This happens when the figure will not fit 
+%on the page where it was defined. LaTeX then attempts to put it on a figures-only 
+%page before it attempts to put it at the top of the next page. A page may contain 
+%figures alone if the figure(s) use at least half the page. To prevent half-empty 
+%pages this limit should probably be increased to around 75%.
+%Be careful not to make \floatpagefraction larger than \topfraction, then you risk to 
+%produce a figure that can neither go on the top of a text page, nor on a page by itself. 
+%If that happens, the figure and all later figures will be postponed until next time a
+%\clearpage is executed (typically at the end of a chapter or the end of the document). 
+%This will also happen if a figure is too large to fit on a page.
+\renewcommand{\floatpagefraction}{0.75}
+%
+%
+% -----------------------------------------------------------------------------
+% Miscellaneous document settings
+% -----------------------------------------------------------------------------
+\raggedbottom		% No blanc spaces in the page itself when using footnotes
+%
+%
+%
+%
+% -----------------------------------------------------------------------------
+% actual document
+% -----------------------------------------------------------------------------
+\begin{document}
+	% --------------------------------------------------------------------------
+	% title page
+	\pagenumbering{alph}	% numbering with letters
+	\include{chapters/00_titlepage}
+	
+	% --------------------------------------------------------------------------
+	% front matter: table of contents, ...
+	\frontmatter								% start numbering pages
+	\pagenumbering{roman}						% numbering with roman numbers
+	\include{chapters/00_certificate}
+	% \include{chapters/00_abstract}
+	\pdfbookmark[1]{\contentsname}{front-toc-anc}
+	\tableofcontents
+
+	% --------------------------------------------------------------------------
+	% main matter: all chapters
+	\mainmatter									% start main part here
+	\pagenumbering{arabic}						% numbering with arabic numbers
+	\include{chapters/01_introduction}
+	\include{chapters/02_problem_statement}
+	\include{chapters/03_background}
+	\include{chapters/04_related_work}
+	\include{chapters/05_methodology}
+	\include{chapters/06_evaluation}
+	\include{chapters/07_conclusion}
+	% add more chapters here
+
+	% --------------------------------------------------------------------------
+	% appendix after two clear pages
+	\cleardoublepage{}
+	\addtocontents{toc}{\protect\vspace*{\baselineskip}}
+	\cleardoublepage
+	\phantomsection
+	\addcontentsline{toc}{chapter}{Abbreviations and Acronyms}	
+	% --------------------------------------------------------------------------
+	% including acronymes and list of figures and tables
+	\include{chapters/99_acronyms}
+	
+	% --------------------------------------------------------------------------
+	% bibliography
+	\nocite{*}						% Include all entries from *.bib
+	\printbibliography
+
+\end{document}

@@ -1,0 +1,58 @@
+\chapter{Experimental Setup and Evaluation}
+\label{chap:evaluation}
+
+% -----------------------------------------------------------------------
+% TO WRITE: Present your experimental results and compare the four methods.
+% This chapter should be the most data-heavy chapter of the thesis.
+% Suggested structure below — remove these comments as you write.
+% -----------------------------------------------------------------------
+
+\section{Experimental Setup}
+% Describe the technical environment:
+% - Programming language and libraries (Python, scikit-learn, etc.)
+% - Hardware / compute environment
+% - Simulation setup: how historical data is replayed as a stream
+% - Any live campaign integration (Mailchimp API, HubSpot, etc.)
+
+\section{Simulation on Historical Campaign Data}
+% Describe the offline evaluation approach:
+% - How you replayed historical data to simulate sequential decisions
+% - Train/test split and time-based validation
+% - How you avoided look-ahead bias
+
+\section{Results: A/B Testing Baseline}
+% Report the baseline performance:
+% - CTR, open rate, conversion rate achieved
+% - Time (number of sends) to reach statistical significance
+% - Any segment-level breakdown
+
+\section{Results: Thompson Sampling}
+% Report Thompson Sampling performance:
+% - CTR, open rate, conversion rate vs. baseline
+% - Convergence curve (regret over time / sends)
+% - Comparison of improvement over A/B testing
+
+\section{Results: Contextual Bandit}
+% Report contextual bandit performance:
+% - Overall metrics vs. baseline
+% - Personalization gain across segments (device, region, engagement tier)
+% - Which context features contributed most to performance
+
+\section{Results: Reinforcement Learning}
+% Report RL performance:
+% - Metrics achieved across campaign steps
+% - Convergence behavior and data requirements
+% - Comparison to bandit methods and A/B baseline
+
+\section{Cross-Method Comparison}
+% Provide a unified comparison of all four methods:
+% - Summary table: CTR / open rate / conversion / convergence speed
+% - Which method wins on which criterion?
+% - Trade-off analysis: performance vs. complexity vs. data requirements
+
+\section{Discussion and Threats to Validity}
+% Critically evaluate your results:
+% - Limitations of simulation vs. live deployment
+% - Potential biases in the dataset
+% - Generalizability to other email marketing platforms
+% - Ethical considerations: GDPR compliance, transparency of AI decisions
