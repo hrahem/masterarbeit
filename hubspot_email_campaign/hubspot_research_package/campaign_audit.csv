@@ -1,0 +1,10 @@
+campaign_id,campaign_name,send_date,events,messages_with_active_send_or_delivery,active_sent_events,delivered,opened_messages,clicked_messages,dashboard_sent,dashboard_delivered,dashboard_opened,dashboard_clicked,delivery_delta,open_delta,click_delta,hidden_delivered_messages,bot_filtering_reported,test_duration_hours,test_outcome,rollout_variant,test_split_A,test_split_B,rollout_share,winning_metric,mature_delivered_7d,clicked_7d,eligible_primary_pilot
+C01,DACH_DE_BASIC_checkoutfeb25_2A,2025-02-22,956,393,393,393,61,6,393,393,60,6,0,1,0,1,on,0,even_split,,0.5,0.5,0,not_specified_even_split,393,6,393
+C02,DE_NL-CW12-25_DACH-DE-LEADSvA,2025-03-17,6995,2521,2521,2504,502,48,2521,2504,502,48,0,0,0,1591,on,0,even_split,,0.5,0.5,0,not_specified_even_split,2504,46,2504
+C03,DE_NL-CW12-25_DACH-DE-PAIDvA,2025-03-17,15370,5651,5651,5635,1219,126,5651,5635,1222,126,0,-3,0,26,on,0,even_split,,0.5,0.5,0,not_specified_even_split,5635,119,5627
+C04,DE_NL-CW12-25_ROW-DE-PAIDvA,2025-03-17,543,185,185,183,50,7,185,183,50,7,0,0,0,1,on,0,even_split,,0.5,0.5,0,not_specified_even_split,183,7,177
+C05,DE_NL-CW20-23_DACH-DE-LEAD_A,2023-05-16,4729,1655,1655,1635,427,99,1639,1635,427,99,0,0,0,980,unavailable,4,inconclusive_fallback,A,0.25,0.25,0.5,opens_per_delivery,1635,91,0
+C06,NL_Webinar_DACH-DE-LEADs_A,2025-02-28,6910,2384,2384,2375,459,59,2384,2375,457,59,0,2,0,1590,on,0,even_split,,0.5,0.5,0,not_specified_even_split,2375,59,2375
+C07,dach_de_free_business26_4,2026-09-18,21239,7506,7506,7495,1628,27,7505,7495,1629,27,0,-1,0,0,on,2,reported_winner,B,0.25,0.25,0.5,opens_per_delivery,0,,0
+C08,dach_de_plus_m_consistency26m_2,2026-08-05,489,199,199,199,28,2,199,199,28,2,0,0,0,0,on,2,reported_winner,B,0.25,0.25,0.5,opens_per_delivery,199,1,118
+C09,dach_de_plus_m_consistency26m_3,2026-08-07,500,196,196,196,22,3,196,196,22,3,0,0,0,0,on,2,inconclusive_fallback,A,0.25,0.25,0.5,opens_per_delivery,196,2,117

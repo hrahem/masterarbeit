@@ -1,0 +1,20 @@
+{
+  "input_folders": 10,
+  "distinct_campaigns": 9,
+  "input_event_rows": 58231,
+  "unique_event_rows": 57731,
+  "duplicate_rows_removed": 500,
+  "delivered_messages": 20615,
+  "clicked_delivered_messages_observed": 377,
+  "mature_delivered_messages": 13120,
+  "clicked_7d": 331,
+  "hidden_delivered_messages": 4189,
+  "linkable_recipients_with_delivery": 14453,
+  "linkable_recipients_in_multiple_campaigns": 1436,
+  "primary_pilot_rows": 11311,
+  "primary_pilot_clicks_7d": 237,
+  "primary_pilot_rows_with_prior_delivery": 1750,
+  "internal_candidate_deliveries": 49,
+  "analysis_cutoff_local": "2026-09-21 00:00:00",
+  "validation": "passed: CSV privacy scan, unique send keys, no immature labels, delivery/click dashboard reconciliation"
+}

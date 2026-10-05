@@ -1,0 +1,20 @@
+{
+  "simulation_only": true,
+  "strategy": "fixed_balanced_randomized_ab",
+  "campaign": "DE_NL-CW12-25_DACH-DE-PAIDvA",
+  "baseline_csv": "C:\\Users\\Hacen\\Desktop\\Masterarbeit\\hubspot_email_campaign\\hubspot_research_package\\pilot_ab_baseline.csv",
+  "baseline_sha256": "79edfafb00bb4d7a1895bb28e3c63dff7b6955864ed9a8d05bb6614facd38345",
+  "environment_sha256": "c5196de94dc2c4a5de2f0d4e84cd179cc55c7b789f88b5b573784dfe7a65a01a",
+  "runner_sha256": "f4a6baa635177995311a5b9da9b40f083548db99071ef3cc564aa8033dc03826",
+  "assumed_probabilities": {
+    "A": 0.015985790408525755,
+    "B": 0.025960170697012803
+  },
+  "historical_campaign_budget": 5627,
+  "simulated_deliveries": 5627,
+  "environment_seed": 42,
+  "policy_seed": 123,
+  "created_utc": "20261003T185935174508Z",
+  "feedback": "immediate revelation of completed seven-day outcome",
+  "limitations": "Stationary aggregate rates; no personalization or delay. No significance test or real-world improvement claim."
+}

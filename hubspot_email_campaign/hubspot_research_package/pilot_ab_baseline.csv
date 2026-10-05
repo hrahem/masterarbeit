@@ -1,0 +1,8 @@
+campaign_id,campaign_name,content_family,A_delivered,A_clicks_7d,A_click_rate_7d,B_delivered,B_clicks_7d,B_click_rate_7d,B_minus_A_percentage_points
+C01,DACH_DE_BASIC_checkoutfeb25_2A,DACH_DE_BASIC_checkoutfeb25_2A,198,4,0.020202,195,2,0.010256,-0.9946
+C02,DE_NL-CW12-25_DACH-DE-LEADSvA,newsletter_CW12_2025,1259,22,0.017474,1245,24,0.019277,0.1803
+C03,DE_NL-CW12-25_DACH-DE-PAIDvA,newsletter_CW12_2025,2815,45,0.015986,2812,73,0.02596,0.9974
+C04,DE_NL-CW12-25_ROW-DE-PAIDvA,newsletter_CW12_2025,93,6,0.064516,84,1,0.011905,-5.2611
+C06,NL_Webinar_DACH-DE-LEADs_A,NL_Webinar_DACH-DE-LEADs_A,1175,29,0.024681,1200,30,0.025,0.0319
+C08,dach_de_plus_m_consistency26m_2,dach_de_plus_m_consistency26m_2,60,0,0.0,58,0,0.0,0.0
+C09,dach_de_plus_m_consistency26m_3,dach_de_plus_m_consistency26m_3,61,1,0.016393,56,0,0.0,-1.6393

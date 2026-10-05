@@ -1,0 +1,16 @@
+campaign,severity,issue,action
+dach_de_plus_m_consistency26m,excluded_duplicate,All 500 event records duplicate dach_de_plus_m_consistency26m_3,Retained sanitized source copy; excluded from combined data.
+DACH_DE_BASIC_checkoutfeb25_2A,identity_missing,Hidden recipients cannot be linked across sends.,"Use message-scoped unknown IDs, never merge all hidden contacts."
+DE_NL-CW12-25_DACH-DE-LEADSvA,identity_missing,Hidden recipients cannot be linked across sends.,"Use message-scoped unknown IDs, never merge all hidden contacts."
+DE_NL-CW12-25_DACH-DE-PAIDvA,identity_missing,Hidden recipients cannot be linked across sends.,"Use message-scoped unknown IDs, never merge all hidden contacts."
+DE_NL-CW12-25_ROW-DE-PAIDvA,identity_missing,Hidden recipients cannot be linked across sends.,"Use message-scoped unknown IDs, never merge all hidden contacts."
+DE_NL-CW20-23_DACH-DE-LEAD_A,legacy,Bot filtering unavailable in source report.,Exclude from primary filtered analysis; retain for sensitivity analysis.
+DE_NL-CW20-23_DACH-DE-LEAD_A,identity_missing,Hidden recipients cannot be linked across sends.,"Use message-scoped unknown IDs, never merge all hidden contacts."
+NL_Webinar_DACH-DE-LEADs_A,identity_missing,Hidden recipients cannot be linked across sends.,"Use message-scoped unknown IDs, never merge all hidden contacts."
+dach_de_free_business26_4,incomplete_window,Seven-day outcome window incomplete as of export date.,"All seven-day labels left blank; re-export after September 25, preferably September 26 or later."
+DACH_DE_BASIC_checkoutfeb25_2A,reconciliation,open counts differ from performance screenshot by 1,"Keep exported outcomes, retain screenshot totals separately; do not fabricate missing events."
+DE_NL-CW12-25_DACH-DE-PAIDvA,reconciliation,open counts differ from performance screenshot by -3,"Keep exported outcomes, retain screenshot totals separately; do not fabricate missing events."
+DE_NL-CW20-23_DACH-DE-LEAD_A,reconciliation,Active SENT count differs from screenshot by 16,Retain discrepancy explicitly; use delivered population for click pilot.
+NL_Webinar_DACH-DE-LEADs_A,reconciliation,open counts differ from performance screenshot by 2,"Keep exported outcomes, retain screenshot totals separately; do not fabricate missing events."
+dach_de_free_business26_4,reconciliation,open counts differ from performance screenshot by -1,"Keep exported outcomes, retain screenshot totals separately; do not fabricate missing events."
+dach_de_free_business26_4,reconciliation,Active SENT count differs from screenshot by 1,Retain discrepancy explicitly; use delivered population for click pilot.

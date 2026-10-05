@@ -2,3 +2,5 @@ master_thesis_presentation.pptx
 thesis_main_correction.pdf
 FDM.pdf
 *.zip
+.raw_exports
+_pycache__
