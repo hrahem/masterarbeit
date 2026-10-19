@@ -3,4 +3,6 @@ thesis_main_correction.pdf
 FDM.pdf
 *.zip
 .raw_exports
-_pycache__
+__pycache__
+results
+.DS_Store
