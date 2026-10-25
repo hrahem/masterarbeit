@@ -31,6 +31,19 @@ A/B testing is a statistical method used to compare two or more variants of a de
     \label{fig:ab_split}
 \end{figure}
 
+% \subsection{Statistical Power at Low Base Rates}
+% \label{sec:bg_power}
+
+% Whether a comparison can detect a given difference is determined before any data is collected. For two proportions $p_1$ and $p_2$ compared at significance level $\alpha$ with power $1 - \beta$, the required sample size per group is
+% \begin{equation}
+%     n \;=\;
+%     \frac{\bigl(z_{1-\alpha/2} + z_{1-\beta}\bigr)^{2}
+%           \bigl[p_1(1-p_1) + p_2(1-p_2)\bigr]}
+%          {(p_2 - p_1)^{2}} .
+%     \label{eq:power}
+% \end{equation}
+% The denominator is the square of an \emph{absolute} difference. The denominator is the square of an \emph{absolute} difference. At low base rates that difference is small even when the relative difference is large, so the required sample size grows in inverse proportion to the base rate. This relation governs the design of the study and is evaluated for the present setting in Chapter~\ref{chap:methodology}.
+
 \section{Bayesian Inference}
 
 Bayesian inference provides a probabilistic framework for updating beliefs based on observed data~\cite{scott2010modern}. Rather than treating campaign performance as a fixed unknown quantity estimated from a single batch, Bayesian methods maintain a probability distribution over possible performance values and update it continuously as new observations arrive. This makes Bayesian inference particularly suitable for online settings where decisions must be made before all data is collected.
@@ -90,6 +103,23 @@ Thompson Sampling is a Bayesian approach to the multi-armed bandit problem~\cite
 \end{algorithmic}
 \end{algorithm}
 
+Two properties matter later. The probability that the algorithm selects arm $a$ equals the posterior probability that $a$ is optimal,
+\begin{equation}
+    \pi(a) \;=\; \Pr\bigl[\theta_a = \max\nolimits_{a'} \theta_{a'}\bigr],
+    \label{eq:ts_propensity}
+\end{equation}
+which can be computed and recorded, and is the logged assignment probability required by Section~\ref{sec:bg_ope}. And because allocation depends on observed outcomes, the resulting data is not an unbiased sample: arms abandoned early stop accumulating evidence. Adaptive allocation improves reward at the cost of the inferential guarantee a fixed split provides~\cite{villar2015multi}.
+
+\section{Batched Bandits}
+\label{sec:bg_batched}
+
+The formulation above assumes the posterior is updated after every round, which commercial email violates: messages are dispatched in batches of thousands with no feedback available within a batch. The appropriate model is the \emph{batched bandit}, in which the horizon is partitioned into batches and the policy may update only at batch boundaries~\cite{perchet2016batched}. Within a batch the posterior is frozen, so the allocation is a fixed probability distribution over arms. Perchet et al.~\cite{perchet2016batched} show that the regret penalty from batching is modest provided the number of batches grows appropriately with the horizon, which makes batch size a design parameter with a measurable cost rather than a limitation.
+
+\section{Delayed Feedback}
+\label{sec:bg_delay}
+
+When a conversion may arrive days after the message that caused it, the reward is no longer observed before the next decision. Joulani et al.~\cite{joulani2013online} show that delay inflates regret in a way depending on the expected delay, and Chapelle~\cite{chapelle2014modeling} treats the form the problem takes in advertising. The implementation detail that matters here is the treatment of outcomes that have not yet arrived: a send whose observation window has not closed is \emph{pending}, neither a success nor a failure, and counting it as a failure biases every posterior mean downward. Admitting a send only once its window has closed introduces a lag between sending and learning. A second consequence is that the measured rate depends on the window, since a conversion arriving after it closes is recorded as a failure, so the window must be fixed in advance and reported.
+
 \section{Contextual Bandits}
 
 Contextual bandits extend the multi-armed bandit framework by conditioning decisions on observable features of the current user or environment, referred to as the context~\cite{li2010contextual}. In email marketing, context may include device type, geographic region, time of day, or past engagement behavior. This allows the algorithm to learn different optimal actions for different user profiles, enabling personalization rather than applying a single winning variant to all recipients.
@@ -118,15 +148,35 @@ Reinforcement Learning (RL) provides a general framework for sequential decision
     \label{fig:rl_loop}
 \end{figure}
 
-\section{Evaluation Metrics}
+\section{Off-Policy Evaluation}
+\label{sec:bg_ope}
 
-Campaign performance is measured using standard email marketing metrics. Let $n_{\mathrm{del}}$ be the number of delivered emails, $n_{\mathrm{open}}$ the number opened, $n_{\mathrm{click}}$ the number of opened emails in which a link was clicked, and $n_{\mathrm{conv}}$ the number of recipients completing the target action after clicking:
+A field experiment runs one policy, yet the useful question is often how a \emph{different} policy would have performed. Off-policy evaluation estimates the value of a target policy $\pi$ from data generated by a logging policy $\pi_0$, provided $\pi_0$ is stochastic and its action probabilities were recorded. Given logged tuples $(x_i, a_i, r_i, \pi_0(a_i \mid x_i))$ of context, action, reward and probability, the inverse propensity scoring estimator is
+\begin{equation}
+    \hat{V}_{\mathrm{IPS}}(\pi)
+    \;=\;
+    \frac{1}{n} \sum_{i=1}^{n}
+    \frac{\pi(a_i \mid x_i)}{\pi_0(a_i \mid x_i)} \, r_i ,
+    \label{eq:ips}
+\end{equation}
+unbiased provided $\pi_0(a \mid x) > 0$ wherever $\pi(a \mid x) > 0$, with variance growing in the ratio of the two probabilities. The doubly robust estimator of Dud\'ik et al.~\cite{dudik2011doubly} reduces that variance by combining IPS with a learned reward model, and Li et al.~\cite{li2011unbiased} give an unbiased replay method for uniformly logged data. These estimators are what allow policies that were never deployed to be assessed on the data of one field run.
+
+\section{Evaluation Metrics}
+\label{sec:bg_metrics}
+
+The primary outcome of this thesis is a completed conversion, defined as a claim recorded within a fixed observation window of $W$ days after the invitation was sent. With $n_{\mathrm{sent}}$ invitations dispatched and $n_{\mathrm{conv}}^{(W)}$ of them followed by a claim inside the window, the primary metric is
+\begin{equation}
+    \text{conversion rate} \;=\; \frac{n_{\mathrm{conv}}^{(W)}}{n_{\mathrm{sent}}} .
+    \label{eq:conversion_rate}
+\end{equation}
+The denominator is the number of messages sent, not the number opened or clicked. An allocation policy controls which message is sent and nothing downstream of it, so the metric it is judged on should share the denominator of the decision it makes. Conditioning on an open would additionally condition on an event the variant under test itself influences, and open tracking is in any case contaminated by automated image prefetching in modern mail clients.
+
+Where engagement metrics are reported, primarily in the discussion of transfer to marketing campaigns, the standard definitions are used, with $n_{\mathrm{del}}$ delivered messages, $n_{\mathrm{open}}$ opened, and $n_{\mathrm{click}}$ containing a click:
 \begin{align}
     \text{open rate} &= \frac{n_{\mathrm{open}}}{n_{\mathrm{del}}}, &
-    \text{click-through rate (CTR)} &= \frac{n_{\mathrm{click}}}{n_{\mathrm{open}}}, &
-    \text{conversion rate} &= \frac{n_{\mathrm{conv}}}{n_{\mathrm{click}}}.
+    \text{click-through rate (CTR)} &= \frac{n_{\mathrm{click}}}{n_{\mathrm{del}}} .
 \end{align}
-In addition, the adaptive methods are compared on convergence speed using the cumulative regret of Equation~\eqref{eq:regret}.
+In addition, the adaptive methods are compared on convergence speed using the cumulative regret of Equation~\eqref{eq:regret}, on \emph{allocation share}, the fraction of the horizon given to each variant, and on \emph{decision reliability}, whether the policy finished favouring the truly better variant. All simulated quantities are reported as means with confidence intervals over repeated runs with paired seeds; single-run figures are not reported, because at the base rates considered here the sampling noise of one run exceeds the effects under study.
 
 \section{Comparison of the Methods}
 \label{sec:bg_comparison}
@@ -146,8 +196,13 @@ Table~\ref{tab:method_comparison} summarizes the four methods along the dimensio
         Uses user context             & no  & no  & yes & yes \\
         Personalized decisions        & no  & no  & yes & yes \\
         Models multi-step sequences   & no  & no  & no  & yes \\
+        Unbiased rate estimates       & yes & no  & no  & no  \\
+        Valid significance test       & yes & no  & no  & no  \\
+        Supports off-policy evaluation & yes & yes & yes & limited \\
         Data requirement              & low & low & medium & high \\
         Implementation complexity     & low & low & medium & high \\
         \bottomrule
     \end{tabular}
 \end{table}
+
+The two rows on unbiasedness make explicit a point often left implicit: A/B testing is not simply the weaker alternative to be superseded. It is the only method in the table that yields estimates and tests with guarantees, which is why the field design of Chapter~\ref{chap:methodology} retains it as a concurrent stream rather than treating adaptive allocation as its replacement.

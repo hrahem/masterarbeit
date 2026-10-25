@@ -9,17 +9,20 @@ Recent advancements in Artificial Intelligence (AI) and Data Mining provide new 
 
 Although this topic has already been widely studied in the literature and in previous academic work, existing approaches typically optimize a single campaign parameter in isolation --- for example, predicting the open rate of a subject line before sending~\cite{paulo2022leveraging}, predicting the best send time per recipient~\cite{araujo2022send}, or allocating advertising budget across channels~\cite{schwartz2017customer, singh2023maximize}. Therefore, rather than proposing a completely new solution, this thesis builds upon existing research by analyzing and comparing different machine learning and data mining techniques in the context of email campaign optimization in order to evaluate their effectiveness and provide insights into their strengths and limitations for this application domain.
 
-The goal of this thesis is to investigate how AI techniques can augment and optimize email campaign design. The research focuses on the application of Data Mining and Machine Learning methods to improve campaign effectiveness, personalization, and performance prediction.
+The goal of this thesis is to investigate how AI techniques can augment and optimize email campaign design. The research focuses on the application of Data Mining and Machine Learning methods to improve campaign effectiveness, personalization, performance prediction, and on establishing how far a simulated evaluation of those methods predicts what happens in practice.
+
+This thesis was carried out in collaboration with ProvenExpert, a platform on which businesses collect and publish customer reviews. The collaboration provides access to historical campaign data and, more importantly, the opportunity to run a field experiment on a live campaign rather than to analyse data collected for another purpose.
 \vspace{1.0cm}
 
 \section*{Standard Email Campaign Workflow}
 
 A standard email marketing campaign follows a structured sequence of steps, illustrated in
 Figure~\ref{fig:email_workflow}. The process begins with goal setting and audience
-segmentation, followed by content design, where the specific email elements --- subject
+definition, followed by content design, where the specific email elements --- subject
 line, body layout, call-to-action button, and imagery --- are defined. Once variants are
 created, they are distributed to recipients and their performance is tracked using engagement
-metrics such as open rate, click-through rate, and conversion rate. The results are then
+metrics such as open rate, click-through rate or, where the campaign targets a
+specific action, the conversion rate itself. The results are then
 analyzed and fed back into the next iteration of the campaign.
 
 \begin{figure}[htbp]
@@ -53,22 +56,20 @@ analyzed and fed back into the next iteration of the campaign.
 
         % adaptive loop introduced by this thesis
         \draw[adapt] (track.north) to[bend right=28]
-            node[above] {adaptive optimization (this thesis): variants updated \emph{during} execution}
+            node[above] {adaptive optimization (this thesis): allocation updated \emph{between batches}}
             (design.north);
     \end{tikzpicture}
-    \caption{Standard email campaign workflow and its correspondence to the KDD
-    process~\cite{fayyad1996kdd}. In traditional practice, the highlighted optimization
-    step runs only after the campaign window closes (solid loop), typically driven by
-    A/B test results. This thesis replaces it with adaptive methods that feed engagement
-    data back into the design step continuously while the campaign is running
-    (dashed loop).}
+    \caption{Email campaign workflow and its correspondence to the KDD process~\cite{fayyad1996kdd}.}
     \label{fig:email_workflow}
 \end{figure}
 
-The key limitation of this traditional workflow is that the optimization step is passive: it
+In traditional practice the highlighted optimization step runs only after the campaign window
+closes, along the solid loop of Figure~\ref{fig:email_workflow}, and is typically driven by
+the result of an A/B test. The key limitation of this workflow is that the step is passive: it
 evaluates the experiment only after a fixed campaign window closes, discards the traffic
 spent on underperforming variants, and produces a single winner applied uniformly to all
-future recipients.
+future recipients. This thesis replaces it with adaptive methods that feed matured outcome
+data back into the allocation decision between successive batches, shown as the dashed loop.
 
 \vspace{1.0cm}
 
@@ -76,10 +77,10 @@ The remainder of this thesis is organized as follows:
 
 \begin{itemize}
     \item Chapter~\ref{chap:problem_statement} defines the problem statement and the research objectives.
-    \item Chapter~\ref{chap:background} introduces the theoretical background: A/B testing, Bayesian inference, multi-armed and contextual bandits, and reinforcement learning.
+    \item Chapter~\ref{chap:background} introduces the theoretical background: A/B testing, Bayesian inference, multi-armed and contextual bandits, delayed feedback, reinforcement learning, off-policy evaluation, and pre-registered experiment design.
     \item Chapter~\ref{chap:related_work} reviews related work and positions this thesis within it.
-    \item Chapter~\ref{chap:methodology} describes the proposed comparison framework, the dataset, and the configuration of each method.
-    \item Chapter~\ref{chap:evaluation} presents the experimental setup and the evaluation results.
-    \item Chapter~\ref{chap:conclusion} concludes the thesis and outlines directions for future work.
+    \item Chapter~\ref{chap:methodology} describes the simulator, the design study derived from it, and the pre-registered field experiment.
+    \item Chapter~\ref{chap:evaluation} presents the field results, their comparison against the pre-registered predictions, and the off-policy evaluation.
+    \item Chapter~\ref{chap:conclusion} concludes the thesis and outlines the transfer of the method to marketing campaigns.
 \end{itemize}
 

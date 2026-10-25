@@ -8,28 +8,50 @@ As customer datasets grow and user behavior becomes increasingly dynamic, this a
 \begin{itemize}
     \item Static A/B tests are slow to converge and waste traffic on underperforming variants, since the equal split is maintained for the entire experiment window regardless of interim results~\cite{schwartz2017customer, kohavi2009controlled}.
     \item They offer no personalization: the same winning variant is applied to all recipients regardless of their profile~\cite{li2010contextual}.
-    \item They optimize one parameter at a time; testing multiple elements simultaneously requires a full-factorial design whose number of variants grows multiplicatively, making it impractical at typical email traffic volumes~\cite{kohavi2009controlled}.
-    \item They cannot react to behavioral drift or seasonal changes, because the winner is fixed once the experiment ends~\cite{wan2023bayesian, singh2023maximize}.
+    \item They optimize one parameter at a time; testing multiple elements simultaneously requires a full-factorial design whose number of variants grows multiplicatively, making it impractical at typical email traffic volumes~\cite{kohavi2009controlled}. Adaptive allocation alone does not remove this constraint, since it still treats each combination as a separate alternative; only methods that describe variants by their features, and can therefore share evidence between combinations, address it directly. \item They cannot react to behavioral drift or seasonal changes, because the winner is fixed once the experiment ends~\cite{wan2023bayesian, singh2023maximize}.
 \end{itemize}
 
-AI-based adaptive methods --- specifically Bayesian bandits, contextual bandits, and reinforcement learning --- address these limitations by updating decisions continuously as new engagement data arrives. However, it remains unclear which of these methods performs best in the specific context of email campaign design, whether any of them consistently outperforms A/B testing across different user segments, and what the practical trade-offs are in terms of convergence speed, personalization capability, and implementation complexity.
+AI-based adaptive methods --- specifically Bayesian bandits, contextual bandits, and reinforcement learning --- address these limitations by updating decisions continuously as new data arrives, and simulation studies regularly report substantial gains for them. What remains unclear is whether those gains survive the conditions of an operational deployment. Three such conditions apply to the campaign studied in this thesis. Only a small fraction of recipients convert, so a whole campaign produces few conversions to learn from. The outcome arrives late, because a profile may be claimed days after the invitation is sent. And invitations are dispatched in batches, so each batch must be allocated using information that is already somewhat out of date.
+
+Together these conditions raise a prior question: what can a field experiment on this campaign establish at all? Whether an adaptive method can be shown to outperform a fixed split depends on how the additional conversions it is expected to earn compare with the normal variation between one run of a campaign and the next. That comparison is not fixed. It improves with the total number of conversions observed and with the size of the difference between the variants, and either may turn out to be large enough or not. If the expected gain is comfortably larger than the variation, a conventional superiority test is appropriate. If it is smaller, such a test is inconclusive by construction and would produce no finding independent of how the variants happened to perform.
+
+Which of these holds for the campaign studied here is not assumed in this thesis but determined, by simulation, before the field experiment is designed (Chapter~\ref{chap:methodology}). The design follows from the answer. Because the outcome of that determination cannot be known in advance, the field experiment is additionally directed at the simulation itself: predictions are derived from the simulator and recorded before the campaign runs, and the field results are used to judge whether those predictions were correct. This yields a result whichever way the prior question is resolved and whatever the variants turn out to do.
+
+The field experiment deliberately varies a single design element. This is a scoping decision rather than a concession to the limitation above: the invitation message is nearly identical on every send, so changing one element in isolation keeps the comparison clean, and the field run is directed at whether the simulation predicts what happens rather than at how many elements can be optimized at once. The multi-element case is examined in simulation, where additional variants cost nothing but computation.
 
 \vspace{1.0cm}
 
 \noindent The main research question of this thesis is:
 
 \begin{quote}
-\textit{Can AI-based adaptive optimization methods outperform classical A/B testing in email campaign design, and if so, which method offers the best trade-off between performance, speed, and personalization?}
+\textit{To what extent can adaptive allocation methods outperform classical A/B
+testing in email campaigns where conversions are rare, outcomes arrive after a
+delay, and sending happens in batches --- and does a simulation of those
+conditions predict what is observed in the field?}
 \end{quote}
+
+\noindent It is addressed through three subordinate questions:
+
+\begin{enumerate}
+    \item How do a fixed random split, Thompson Sampling, a contextual bandit, and
+    reinforcement learning compare under these conditions in terms of conversions
+    gained, speed of convergence, and how reliably each identifies the better
+    variant?
+    \item What can a field experiment on this campaign establish at the volume
+    available, and what does that imply for its design?
+    \item How closely do the field results match the predictions recorded before
+    the campaign was run?
+\end{enumerate}
 
 \vspace{0.5cm}
 
 \noindent This leads to the following specific research objectives:
 
 \begin{enumerate}
-    \item Implement and configure a representative set of adaptive optimization methods (Thompson Sampling, contextual bandits, and reinforcement learning) alongside a classical A/B testing baseline.
-    \item Apply all methods to the same email campaign dataset from ProvenExpert, optimizing across the same set of design parameters.
-    \item Evaluate and compare all methods on click-through rate, open rate, conversion rate, and convergence speed.
-    \item Analyze performance across user segments defined by device type, geographic region, and past engagement level.
-    \item Derive practical recommendations for marketing teams considering a transition from static experimentation to adaptive AI-based campaign optimization.
+    \item Build a simulator of the campaign that reproduces its three defining conditions: a low conversion rate, an outcome that arrives after a delay, and sending in batches.
+    \item Implement the allocation methods to be compared --- a fixed random split as used in classical A/B testing, Thompson Sampling, a contextual bandit, and reinforcement learning --- and compare them within the simulator on conversions gained, speed of convergence, and how reliably each identifies the better variant.
+    \item Use the simulator to determine what a field experiment on this campaign can establish at the volume available, and to choose its design: how many variants to test, how large each batch should be, and what share of recipients to reserve for the control group.
+    \item Record the predictions of the simulator in writing, together with the primary metric and the analysis plan, before any field data exists.
+    \item Run the field experiment on the invitation campaign, with the fixed random split as a control group running alongside the adaptive method in every batch, logging for every message both the variant sent and the probability with which it was chosen.
+    \item Compare the field results against the recorded predictions, estimate the performance of each variant from the control group, and use the logged probabilities to assess on the same data how the methods that were not deployed --- in particular the contextual ones --- would have performed.
 \end{enumerate}

@@ -1,8 +1,8 @@
-PWD /Users/hrahem/Desktop/Masterarbeit/thesis
+PWD /Users/hrahem/Desktop/masterarbeit/thesis
 INPUT /usr/local/texlive/2026/texmf.cnf
 INPUT /usr/local/texlive/2026/texmf-dist/web2c/texmf.cnf
 INPUT /usr/local/texlive/2026/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT /Users/hrahem/Desktop/Masterarbeit/thesis/thesis_main.tex
+INPUT /Users/hrahem/Desktop/masterarbeit/thesis/thesis_main.tex
 OUTPUT thesis_main.log
 INPUT /usr/local/texlive/2026/texmf-dist/tex/latex/base/fix-cm.sty
 INPUT /usr/local/texlive/2026/texmf-dist/tex/latex/base/fix-cm.sty
