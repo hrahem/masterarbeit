@@ -708,6 +708,7 @@ OUTPUT chapters/05_methodology.aux
 INPUT ./chapters/05_methodology.tex
 INPUT ./chapters/05_methodology.tex
 INPUT chapters/05_methodology.tex
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/lm/ec-lmssbx10.tfm
 INPUT ./chapters/06_evaluation.tex
 INPUT ./chapters/06_evaluation.tex
 OUTPUT chapters/06_evaluation.aux

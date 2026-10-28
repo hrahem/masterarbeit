@@ -1,62 +1,155 @@
 \chapter{Methodology and Proposed Framework}
 \label{chap:methodology}
 
-% -----------------------------------------------------------------------
-% TO WRITE: Describe the overall design of your comparison framework and
-% the technical choices behind each method. Explain *why* you chose each
-% approach, what data you used, and how you prepared it.
-% Suggested structure below — remove these comments as you write.
-% -----------------------------------------------------------------------
+This chapter describes the methodology for comparing two ways of distributing profile-claim invitation emails: a fixed random split and Thompson Sampling. The practical question is whether learning from earlier batches helps the company obtain more claims from later batches. A second question is whether a simulation can give a useful picture of what happens in the real campaign.
+
+The methodology combines historical campaign analysis, simulation-based experiment design, and a field comparison. Historical records inform the campaign conditions represented by the simulator, while the experimental protocol defines how invitations are assigned and outcomes evaluated. Numerical examples in this chapter illustrate the procedure rather than report empirical findings.
 
 \section{Research Design and Framework Overview}
-% Describe the overall structure of your comparison:
-% - What are the four methods being compared and why those four?
-% - How does the experiment flow (historical simulation first, then live)?
-% - Provide a diagram/figure of the framework pipeline if possible.
+\label{sec:method_research_design}
+
+ProvenExpert's invitation asks a business to claim its existing profile. The experiment compares email versions that differ in one element, such as the subject line, while keeping the rest of the message unchanged. An \emph{allocation policy} simply means the rule used to choose which version each business receives.
+
+The work has three stages:
+\begin{enumerate}
+    \item \textbf{Understand the campaign.} Use historical invitation and claim records to characterize the conversion rate, the time between sending and claiming, and operational sending capacity. Account for repeated invitations and reminders when defining the experimental population.
+    \item \textbf{Test possible designs in simulation.} Generate artificial campaign outcomes under clearly stated assumptions. Compare the two allocation rules across different batch sizes, sending volumes, claim delays, and differences between versions. Include scenarios in which the versions perform equally well.
+    \item \textbf{Run and assess a field experiment.} Record the design and predictions before sending experimental emails. Run a fixed random split alongside Thompson Sampling and compare the observed results with the predictions.
+\end{enumerate}
+
+Historical data can inform realistic conditions, but it cannot reveal the performance of new versions that have never been sent. Their possible differences must therefore be explored through several simulation scenarios. The distinction between historically estimated conditions and assumed differences between new versions is retained throughout the analysis.
+
+The field comparison addresses two separate questions. First, does version A perform better than version B? Second, does changing the allocation over time obtain more claims than keeping a fixed split? These are different comparisons. Even when B is better, Thompson Sampling must spend some of the campaign learning this, and may have too few later sends left to produce a clear overall improvement.
 
 \section{Dataset Description}
-% Describe the ProvenExpert campaign dataset:
-% - Time range, number of campaigns, number of recipients
-% - What features are available (device, geo, engagement history, etc.)
-% - Any preprocessing, anonymization, or filtering steps applied
+\label{sec:method_data}
+
+\subsection{Historical Data and Experimental Data}
+
+Historical data characterize the existing invitation campaign. The required fields are a pseudonymized business or profile identifier, the invitation time, and the claim time or claim status. Information about message versions and reminders is needed where available. The dataset is described by its extraction period, invitation count, distinct profile count, and completeness of outcome tracking.
+
+Experimental records connect each invitation to its assignment and subsequent outcome. The unit of assignment in the single-invitation design is one eligible business profile receiving one experimental invitation. Duplicate records must be removed or grouped before assignment. If a business has multiple profiles or email addresses, the grouping rule must prevent it from unintentionally receiving competing experimental versions. The protocol specifies reminder handling before experimental sending so that repeated contacts do not introduce an uncontrolled difference between groups.
+
+The analysis design excludes names and email addresses from the research extract. A separate mapping may still be needed to connect claims to invitations; the resulting data are therefore described as \emph{pseudonymized}, rather than fully anonymous.
+
+\subsection{What Counts as a Successful Outcome?}
+
+The primary outcome is a profile claim within a fixed period after sending. This period is called the \emph{observation window}. Each invitation receives one of three statuses:
+\begin{itemize}
+    \item \textbf{Pending:} the observation window has not ended.
+    \item \textbf{Success:} the window has ended and a qualifying claim occurred within it.
+    \item \textbf{No conversion:} the window has ended without a qualifying claim, with outcome tracking available.
+\end{itemize}
+
+For example, with an illustrative seven-day window, an invitation sent on Monday is evaluated after seven full days. A claim on day three counts as a success, but the learning algorithm receives that completed record only when the window closes. An invitation with no claim by day two is still pending, not a failure. Waiting for the same period for both outcomes avoids learning from early successes while the corresponding non-conversions are still unresolved. Selection of the observation window balances the historical timing of claims against the delay introduced into learning.
+
+The main metric is straightforward:
+\begin{equation}
+\text{claim conversion rate} =
+\frac{\text{invitations followed by a claim within the window}}
+{\text{experimental invitations sent}}.
+\label{eq:method_rate}
+\end{equation}
+For illustration, 100 claims from 10,000 invitations correspond to a conversion rate of 1\%. Opens and clicks may provide supporting information, but they do not replace claims as the primary outcome. Dispatch failures and missing outcome tracking require documented rules; a missing record must not silently become a failure. Evaluation continues until the final invitation has received its full observation window.
+
+A claim following an invitation does not prove that the invitation caused it. This experiment compares email versions and allocation rules; without a no-email group, it does not measure the effect of sending any invitation versus sending none.
+
+\subsection{Experimental Logging and Outcome Linkage}
+
+The logging specification connects each send to its eventual outcome through the following fields:
+\begin{itemize}
+    \item A pseudonymized profile identifier and a unique send identifier.
+    \item The batch, sending time, and observation-window closing time.
+    \item The assigned group, email version, and probabilities used to assign them.
+    \item The claim timestamp, final outcome, and any tracking problems.
+    \item Any recipient information used to make the decision, recorded as it existed before sending.
+\end{itemize}
+
+An assignment probability is the chance that the rule gave a particular choice. For a two-version fixed split, each version has a 50\% chance. In the adaptive group, these chances can change between batches. Recording them explains how the data were collected and may support later analysis of alternative rules.
+
+Log validation checks that send identifiers are unique, outcomes link to the correct invitations, and updates use only records whose observation windows have closed. Assignment records and outcome records are retained separately when necessary and joined through the send identifier.
 
 \section{Campaign Design Parameters}
 \label{sec:campaign_parameters}
-% List the email elements being optimized:
-% - Subject line variants
-% - CTA button variants
-% - Layout / content block variants
-% - Image placement / color scheme variants
-% Explain how variants were generated or selected.
+
+The design study examines six campaign parameters: the number of versions, emails per batch, time between batches, observation window, control-group share, and total sending volume. Their selection combines simulation evidence with operational constraints.
+
+These settings interact. Sending larger batches may be operationally convenient, but more emails then leave before the algorithm can learn anything new. A longer observation window captures later claims but delays learning. Reserving more recipients for the fixed-split group provides more direct evidence about the versions, while leaving fewer invitations for adaptive allocation.
+
+The simulator models both whether a claim happens and when it happens. These two settings must be consistent. A historical rate measured within seven days must not be treated as an eventual claim rate and then reduced again to account for claims after day seven. Otherwise, the same delay is counted twice. The initial model assumes stable conversion probabilities and a shared claim-delay pattern across versions. Sensitivity analysis examines how changes to these assumptions affect the comparison.
+
+Delayed feedback is a recognized issue in online learning~\cite{joulani2013online}. In this study, only completed observation windows can influence the next batch. For irregular send times, eligibility for an update must be determined from actual timestamps.
 
 \section{Baseline: Classical A/B Testing}
-% Describe your A/B testing implementation:
-% - Traffic split method (random assignment)
-% - Statistical test used (e.g. chi-squared, z-test)
-% - Stopping rule (fixed sample size or significance threshold)
+\label{sec:method_baseline}
+
+The baseline uses a fixed random split for the whole campaign. With two versions, each has a 50\% chance of being selected. With three versions, each has a one-third chance. These probabilities do not change in response to results.
+
+Under the field protocol, each batch is divided randomly into two groups. The \emph{control group} uses this fixed split. The \emph{adaptive group} uses Thompson Sampling. Both groups run at the same time so that the comparison is less affected by changes between campaign dates.
+
+For illustration only, a batch of 1,000 invitations could reserve 200 for control and 800 for adaptive allocation. Within control, A and B would each have a 50\% selection probability; the actual counts need not be exactly 100 each. The adaptive group may favor one version as evidence accumulates. This numerical split is illustrative; it does not specify the experimental control share. Where rounding is needed to obtain a whole number of control recipients, the log must record the actual resulting share.
+
+The control group provides the basis for estimating version performance. The allocation-rule comparison uses claims per send in the two groups and accounts for batches and calendar time. Raw claim totals would be misleading when the groups have different sizes. The protocol requires the comparison method and stopping rule to be specified before launch and assessed in simulation.
 
 \section{Bayesian Bandit with Thompson Sampling}
-% Describe the Thompson Sampling implementation:
-% - Prior distribution chosen (e.g. Beta-Bernoulli for CTR)
-% - How posterior is updated with each new observation
-% - How variant selection decisions are made per send
+\label{sec:method_ts}
+
+Thompson Sampling maintains an estimate of each version's conversion rate together with uncertainty about that estimate. It uses this uncertainty to keep trying alternatives while increasingly favoring versions supported by better results~\cite{russo2018tutorial}.
+
+For each version, the implementation stores two numbers, called alpha and beta. Alpha increases with completed conversions; beta increases with completed non-conversions. Together they define a Beta distribution: a distribution over possible conversion rates. The reference configuration starts both numbers at 1 for every version. This is the initial assumption, or \emph{prior}. After observing data, the updated distribution is called the \emph{posterior}.
+
+For example, suppose a version has 10 claims and 990 non-conversions after 1,000 completed observation windows. Starting from 1 and 1 gives alpha equal to 11 and beta equal to 991. The mean of this distribution is $11/(11+991)$, approximately 1.10\%. This differs slightly from the observed 1\% because the initial assumption still contributes to the estimate. These numbers are illustrative.
+
+At each batch boundary, the procedure is:
+\begin{enumerate}
+    \item Collect newly completed outcomes, excluding all pending invitations.
+    \item Update each version's alpha and beta using these outcomes. Learning uses completed outcomes from both the control and adaptive groups.
+    \item Keep these updated distributions unchanged while allocating the next batch.
+    \item For each adaptive invitation, draw one possible conversion rate from each version's distribution and choose the version with the largest draw.
+    \item Record the assignment and its probability, then wait for later completed outcomes before updating again.
+\end{enumerate}
+
+The random draw is repeated for every adaptive invitation; one draw does not choose a single version for the entire batch. The randomness is also not an uninformed coin toss: its behavior depends on the results collected so far. Better-supported versions tend to be selected more often, but uncertain alternatives can still be selected. The algorithm never sees the simulator's true conversion rates.
+
+The initial Beta(1,1) distribution does not express a belief that conversions are rare. The choice of starting values is therefore included in the sensitivity analysis. The allocation implementation calculates selection probabilities directly for two versions and estimates them using repeated sampling for more versions. The accuracy of those estimates must be checked before using them in weighted analyses. The probability of receiving a version within the adaptive group must also be distinguished from its probability across both groups combined.
 
 \section{Contextual Bandit with User Segmentation}
-% Describe the contextual bandit implementation:
-% - Which user features are used as context
-% - Algorithm used (e.g. LinUCB or contextual Thompson Sampling)
-% - How context vectors are constructed per recipient
+\label{sec:method_contextual}
+
+A contextual bandit could choose different versions for different types of businesses. For example, one version might work better for one business category and another version for a different category. This requires suitable information available before sending and evidence that the best version may depend on that information.
+
+The contextual extension requires features recorded before sending and an evaluation that separates policy development from performance assessment. Its purpose is to test whether recipient-specific choices provide additional value beyond a single allocation rule for the whole population. The single-invitation core comparison isolates allocation behavior without recipient features; contextual personalization constitutes a separate methodological question.
 
 \section{Reinforcement Learning for Drip Campaigns}
-% Describe the RL formulation:
-% - State space (user engagement history, campaign step)
-% - Action space (next email variant to send)
-% - Reward function (e.g. click, conversion, or composite)
-% - Algorithm used (e.g. Q-learning, DQN, policy gradient)
-% - Training procedure on historical data
+\label{sec:method_rl}
+
+A multi-step reinforcement-learning extension would make sense if the company wants to optimize a sequence of decisions, such as whether and when to send a reminder after an initial invitation. Earlier messages could then affect the situation in which later decisions are made.
+
+A delayed claim after one invitation does not, on its own, require such a model. A multi-step formulation must define the information available at each decision, the permitted actions, and how additional contacts are valued or penalized. These requirements distinguish optimization of a reminder sequence from the core comparison of versions of a single invitation. The two decision problems require separate experimental specifications.
 
 \section{Evaluation Metrics and Criteria}
-% Define formally how you will compare the four methods:
-% - Primary metrics: CTR, open rate, conversion rate
-% - Secondary metrics: convergence speed, regret (for bandits)
-% - Segment-level breakdown (device, region, engagement tier)
+\label{sec:method_evaluation}
+
+\subsection{Comparing the Allocation Rules}
+
+The simulation comparison considers conversion rates and total claims at the same sending volume. It also tracks how the share assigned to each version changes over batches. Where the simulator knows which version is best, it can calculate the expected claims lost by choosing other versions. This quantity, called \emph{regret}, is a simulation measure; the true best version is not directly known in the field.
+
+The evaluation protocol calls for repeated runs of each scenario because one random run may be unusually favorable or unfavorable. A paired comparison matches an adaptive run with a uniform-allocation run under the same simulated conditions. This requires a deliberate matching of underlying random events; merely giving two programs the same seed is insufficient. Reproducibility records include the seeds, code version, settings, and treatment of claim delays. The actual number of simulated sends, including any final partial batch, is used when calculating performance.
+
+\subsection{Uncertainty and the Final Choice}
+
+The evaluation distinguishes two types of uncertainty interval. A confidence interval for the average simulation result describes how precisely repeated runs estimate the average. A prediction interval describes how much the result of one campaign may vary under the simulated assumptions. Running more simulations can make the average more precise without making a real campaign less variable. The prediction interval is therefore the relevant range for comparing a future field campaign with the simulation.
+
+The final decision rule must allow the conclusion that the evidence does not establish a preferred version. In simulations where A and B are equally good, sending more messages to A is not automatically a mistake. The mistake would be declaring that A is better without adequate evidence. The evaluation separates false declarations of superiority from allocation imbalance. The final-decision protocol includes all completed outcomes, including the follow-up period after sending ends.
+
+\subsection{Scope of Off-Policy Evaluation}
+
+Off-policy evaluation asks how another allocation rule might have performed using outcomes collected by the rule that actually ran~\cite{dudik2011doubly,li2011unbiased}. For example, data from a randomized 50/50 campaign may help estimate a fixed 80/20 rule. This requires linked outcomes and trustworthy assignment probabilities, and the logged campaign must have tried the choices the alternative rule would make.
+
+The scope of this analysis depends on the target rule and the information captured in the log. Evaluating a complete alternative Thompson Sampling run is harder because different early observations would change its later decisions. A simple reweighting of the existing log does not reproduce that learning history. Any off-policy analysis therefore requires an explicit target rule, a justified estimation method, and an uncertainty assessment appropriate to the assignment process. It is separate from the direct comparison of the two experimental groups.
+
+\subsection{Pre-Registration and Interpretation}
+
+The experimental protocol requires a dated plan, established before launch, recording the email versions, eligibility rules, observation window, batch schedule, control share, total volume or duration, and analysis procedure. Recording this in advance is called \emph{pre-registration}. The plan also specifies the simulation assumptions and predictions so that they are not selected afterwards to fit the observed results.
+
+The numerical evaluation belongs in Chapter~\ref{chap:evaluation}; this chapter defines the procedures and conditions under which those results are interpreted. Agreement with one field campaign would support the usefulness of the simulation in that setting; it would not prove that its assumptions hold for every campaign.
